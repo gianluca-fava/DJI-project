@@ -6,7 +6,7 @@ Creare una nuova APP nell’account DJI Developer e ottenuto le chiavi API:  htt
 
 ## IMPLEMENTAZIONE CON DOCKER
 
-1. **Scaricare il framework**: scaricare il file https://terra-sz-hc1pro-cloudapi.oss-cn-shenzhen.aliyuncs.com/c0af9fe0d7eb4f35a8fe5b695e4d0b96/docker/cloud_api_sample_docker.zip importarlo in un nuovo progetto intelliJ IDEA
+1. **Scaricare il framework**: scaricare il file [cloud_api_sample_docker.zip](https://terra-sz-hc1pro-cloudapi.oss-cn-shenzhen.aliyuncs.com/c0af9fe0d7eb4f35a8fe5b695e4d0b96/docker/cloud_api_sample_docker.zip) importarlo in un nuovo progetto intelliJ IDEA
 2. **Installare docker-compose**: (io ho installato la versione docker desktop esterna a intelliJ)
     
     ```bash
