@@ -341,7 +341,54 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' clo
 
 
 ## FILE ESEMPIO PER OTTENERE LA TELEMETRIA (con MQTT)
-1. Il primo file implementa un client MQTT utilizzando la libreria paho-mqtt, si connette a un broker MQTT definito da un IP e una porta, si iscrive a un topic specifico e gestisce la connessione e la disconnessione del client, con tentativi automatici di riconnessione in caso di disconnessione. Quando riceve un messaggio dal broker, lo stampa sul terminale, può essere usato per ottenere i dati della telemetria in tempo reale.
+
+1. Per ottenere DEVICE SN e GATEWAY SN, utili per ottenere poi la telemetria.
+   ```python
+    import requests
+    import json
+    
+    # Configurazione del server locale
+    BASE_URL = "http://localhost:6789/manage/api/v1/login"
+    
+    # Dati di login (presi dal file JSON)
+    login_payload = {
+        "username": "adminPC",
+        "password": "adminPC",
+        "flag": 1
+    }
+    
+    # Imposta l'header per la richiesta
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    
+    # Funzione per inviare la richiesta di login
+    def login():
+        url = BASE_URL
+    
+        try:
+            # Effettua la richiesta POST
+            response = requests.post(url, data=json.dumps(login_payload), headers=headers)
+    
+            # Verifica lo stato della risposta
+            if response.status_code == 200:
+                print("Login riuscito!")
+                print("Risposta JSON:", response.json())
+            else:
+                print(f"Errore: {response.status_code}, {response.text}")
+        except Exception as e:
+            print(f"Errore durante la richiesta: {e}")
+    
+    # Chiamata alla funzione di login
+    if __name__ == "__main__":
+        login()
+   ```
+    Esempio di risposta:
+   ```bash
+   {'code': 0, 'message': 'success', 'data': {'username': 'adminPC', 'user_id': 'xxxx', 'workspace_id': 'xxxx', 'user_type': 1, 'mqtt_username': 'admin', 'mqtt_password': 'admin', 'access_token': 'xxxx', 'mqtt_addr': 'tcp://192.168.0.0:1883'}}
+   ```
+
+3. Client MQTT, quando riceve un messaggio dal broker, lo stampa sul terminale, può essere usato per ottenere i dati della telemetria in tempo reale.
     ```python
     import logging
     import time
