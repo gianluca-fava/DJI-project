@@ -1,16 +1,11 @@
-# TIROCINIO
+# IMPLEMENTAZIONE di CLOUD API
 
-[TESI](https://www.notion.so/TESI-12f43734524680f1bde2db0ed2e90c67?pvs=21)
+Creare l'account DJI Developer
+Creare una nuova APP nell’account DJI Developer e ottenuto le chiavi API:  https://developer.dji.com/user/apps/
 
-Ho creato l’account DJI Developer
+## IMPLEMENTAZIONE CON DOCKER
 
-Ho creato un progetto nell’account DJI Developer e ottenuto le chiavi API.
-
-!!!!!!usare INTELLIJ IDEA
-
-## DOCKER
-
-1.  scaricare il framework https://terra-sz-hc1pro-cloudapi.oss-cn-shenzhen.aliyuncs.com/c0af9fe0d7eb4f35a8fe5b695e4d0b96/docker/cloud_api_sample_docker.zip e importarlo in un nuovo progetto intelliJ
+1. scaricare il framework https://terra-sz-hc1pro-cloudapi.oss-cn-shenzhen.aliyuncs.com/c0af9fe0d7eb4f35a8fe5b695e4d0b96/docker/cloud_api_sample_docker.zip e importarlo in un nuovo progetto intelliJ IDEA
 2. installazione docker-compose:  (io ho installato la versione docker desktop esterna a intelliJ)
     
     ```jsx
@@ -21,8 +16,8 @@ Ho creato un progetto nell’account DJI Developer e ottenuto le chiavi API.
     /usr/local/bin/docker-compose --version
     ```
     
-3. cambiare le variabili d’ambiente prendendo i valori da DJI dev creando un profilo developer: 
-Go to source/nginx/front_page/src/api/http, modify the front-end configuration file "config.ts" and [**enter the APP ID, APP Key and APP License applied for on the developer website](https://developer.dji.com/en/user/apps/#all)** 
+3. cambiare le variabili d’ambiente prendendo i valori da DJI developer: 
+Andando in source/nginx/front_page/src/api/http,modificare la configurazione del front-end nel file "config.ts" ed inserire le chiavi create all'inizio (appId, appKey, appLicense)
     
     ```python
     // license
@@ -33,8 +28,8 @@ Go to source/nginx/front_page/src/api/http, modify the front-end configuration f
     
     // http
     
-    baseURL: 'http://192.168.0.53:6789/', // This url must end with "/". Examp,le: 'http://192.168.1.1:6789/'
-    websocketURL: 'ws://192.168.0.53:6789/api/v1/ws', // Example: 'ws://192.168.1.1:6789/api/v1/ws'
+    baseURL: 'http://192.168.0.0:6789/', // This url must end with "/". Examp,le: 'http://192.168.1.1:6789/'
+    websocketURL: 'ws://192.168.0.0:6789/api/v1/ws', // Example: 'ws://192.168.1.1:6789/api/v1/ws'
     
     #Nel caso in cui si volgia la livestream, cerare un profilo su agora e aggioranre anche i campi in fondo: agoraAPPID, agoraToken, agoraChannel
     ```
@@ -138,8 +133,8 @@ Go to source/nginx/front_page/src/api/http, modify the front-end configuration f
     sudo systemctl status redis-server
     ```
     
-5. Go to source/backend_service/src/main/resources, modify the backend configuration file "application.yml"
-Il mio file application.yml con le parti da cambiare evidenziate in rosso
+5. Andando su source/backend_service/src/main/resources, modificare la configurazione backend nel file "application.yml".
+Il mio file application.yml con le parti da cambiare evidenziate in rosso:
     
     ```python
     .......
@@ -149,7 +144,7 @@ Il mio file application.yml con le parti da cambiare evidenziate in rosso
       # BASIC parameters are required.
       BASIC:
         protocol: MQTT # @see com.dji.sample.component.mqtt.model.MqttProtocolEnum
-        host: 192.168.0.53 #enter your public IP (the one found in your pc's network settings)
+        host: 192.168.0.0 #enter your public IP (the one found in your pc's network settings)
         port: 1883
         username: JavaServer
         password: 123456
@@ -158,7 +153,7 @@ Il mio file application.yml con le parti da cambiare evidenziate in rosso
         path:
       DRC:
         protocol: WS # @see com.dji.sample.component.mqtt.model.MqttProtocolEnum
-        host: 192.168.0.53 #enter your public IP (the one found in your pc's network settings)
+        host: 192.168.0.0 #enter your public IP (the one found in your pc's network settings)
         port: 8083
         path: /mqtt
         username: JavaServer
@@ -253,7 +248,7 @@ Il mio file application.yml con le parti da cambiare evidenziate in rosso
           url: Please enter the rtmp access address. #  Example：http://192.168.1.1:1985/rtc/v1/whip/?app=live&stream=
     ```
     
-6. eseguire
+6. Esecuzione: Caricamento dell’immagine Docker, aggiornamento della front-end e back-end e creazione ed avvio del container
     
     ```jsx
     sudo docker load < cloud_api_sample_docker_v1.10.0.tar
@@ -275,7 +270,8 @@ Il mio file application.yml con le parti da cambiare evidenziate in rosso
      #Io eseguo sempre manualmente anche il docker file (update_front.sh + cloud_api_sample/source/nginx/Dockerfile e update_backend.sh + cloud_api_sample/docker-compose.yml) 
     ```
     
-    ALCUNI ERRORI POSSIBILI:
+
+## ALCUNI POSSIBILI ERRORI:
     
     ```jsx
     ERRORE:
@@ -366,7 +362,7 @@ from paho.mqtt import client as mqtt_client
 #devicesn: 1581F4BND226800BEXD9
 
 # Definizione del broker e del topic
-BROKER = '192.168.0.53'
+BROKER = '192.168.0.0'
 PORT = 1883
 TOPIC = "thing/product/1581F4BND226800BEXD9/osd"
 CLIENT_ID = 'python-mqtt-0'  # Client ID casuale per evitare conflitti
