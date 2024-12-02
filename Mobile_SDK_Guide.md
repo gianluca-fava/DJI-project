@@ -1,4 +1,4 @@
-# IMPLEMENTAZIONE di MOBILE SDK
+# IMPLEMENTAZIONE di MOBILE SDK 
 
 A grandi linee viene seguito il tutorial ufficiale DJI: [Tutorial](https://developer.dji.com/doc/mobile-sdk-tutorial/en/quick-start/run-sample.html)
 
