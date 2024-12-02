@@ -1,25 +1,25 @@
 # IMPLEMENTAZIONE di CLOUD API
 
 Creare l'account DJI Developer
+
 Creare una nuova APP nell’account DJI Developer e ottenuto le chiavi API:  https://developer.dji.com/user/apps/
 
 ## IMPLEMENTAZIONE CON DOCKER
 
-1. scaricare il framework https://terra-sz-hc1pro-cloudapi.oss-cn-shenzhen.aliyuncs.com/c0af9fe0d7eb4f35a8fe5b695e4d0b96/docker/cloud_api_sample_docker.zip e importarlo in un nuovo progetto intelliJ IDEA
-2. installazione docker-compose:  (io ho installato la versione docker desktop esterna a intelliJ)
+1. **Scaricare il framework**: scaricare il file https://terra-sz-hc1pro-cloudapi.oss-cn-shenzhen.aliyuncs.com/c0af9fe0d7eb4f35a8fe5b695e4d0b96/docker/cloud_api_sample_docker.zip importarlo in un nuovo progetto intelliJ IDEA
+2. **Installare docker-compose**: (io ho installato la versione docker desktop esterna a intelliJ)
     
-    ```jsx
-    https://github.com/docker/compose/releases installare la versione corretta
+    ```bash
+    https://github.com/docker/compose/releases #installare la versione corretta
     
     sudo mv ~/Downloads/docker-compose-linux-x86_64 /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
     /usr/local/bin/docker-compose --version
     ```
     
-3. cambiare le variabili d’ambiente prendendo i valori da DJI developer: 
-Andando in source/nginx/front_page/src/api/http,modificare la configurazione del front-end nel file "config.ts" ed inserire le chiavi create all'inizio (appId, appKey, appLicense)
+3. **Cambiare le variabili d’ambiente prendendo i valori da DJI developer**: andando in source/nginx/front_page/src/api/http,modificare la configurazione del front-end nel file "config.ts" ed inserire le chiavi create all'inizio (appId, appKey, appLicense)
     
-    ```python
+    ```bash
     // license
     
     appId: '******', // You need to go to the development website to apply.
@@ -34,9 +34,9 @@ Andando in source/nginx/front_page/src/api/http,modificare la configurazione del
     #Nel caso in cui si volgia la livestream, cerare un profilo su agora e aggioranre anche i campi in fondo: agoraAPPID, agoraToken, agoraChannel
     ```
     
-4. Se necessario installare i pacchetti manualmente:
+5. **Installare i pacchetti**: se i pacchetti richiesti non sono già installati, procedere come segue
     
-    ```jsx
+    ```bash
     #nodeJS va bene una versione pari o successiva alla 17.8.0 (nel mio caso: node -v v20.17.0    npm -v 10.8.2)
     
     sudo apt remove nodejs
@@ -66,9 +66,9 @@ Andando in source/nginx/front_page/src/api/http,modificare la configurazione del
     
     ```
     
-    Installazione Java
+    **- Installazione Java**
     
-    ```jsx
+    ```bash
     #https://www.openlogic.com/openjdk-downloads ho istallato jdk 17.0.4
     
     #estraggo
@@ -88,9 +88,9 @@ Andando in source/nginx/front_page/src/api/http,modificare la configurazione del
     java -version
     ```
     
-    Installazione EMQX
+    **- Installazione EMQX**
     
-    ```jsx
+    ```bash
     installare la versione deb corretta da: https://github.com/emqx/emqx/releases
     
     sudo dpkg -i emqx-5.8.0-ubuntu24.04-amd64.deb
@@ -99,9 +99,9 @@ Andando in source/nginx/front_page/src/api/http,modificare la configurazione del
     sudo systemctl status emqx
     ```
     
-    Installazione MySQL
+    **- Installazione MySQL**
     
-    ```jsx
+    ```bash
     sudo apt update
     
     sudo apt install mysql-server -y
@@ -111,9 +111,9 @@ Andando in source/nginx/front_page/src/api/http,modificare la configurazione del
     source cloud_api_sample/source/backend_service/sql/cloud_sample.sql
     ```
     
-    Installazione Redis:
+    **- Installazione Redis**
     
-    ```jsx
+    ```bash
     dpkg -l | grep redis
     
     sudo apt-get remove --purge redis
@@ -133,10 +133,10 @@ Andando in source/nginx/front_page/src/api/http,modificare la configurazione del
     sudo systemctl status redis-server
     ```
     
-5. Andando su source/backend_service/src/main/resources, modificare la configurazione backend nel file "application.yml".
-Il mio file application.yml con le parti da cambiare evidenziate in rosso:
+6. **Cambiare i campi**: andando su source/backend_service/src/main/resources, modificare la configurazione backend nel file "application.yml".
+Di seguito il mio file application.yml con le parti da cambiare:
     
-    ```python
+    ```bash
     .......
     
     mqtt:
@@ -248,9 +248,9 @@ Il mio file application.yml con le parti da cambiare evidenziate in rosso:
           url: Please enter the rtmp access address. #  Example：http://192.168.1.1:1985/rtc/v1/whip/?app=live&stream=
     ```
     
-6. Esecuzione: Caricamento dell’immagine Docker, aggiornamento della front-end e back-end e creazione ed avvio del container
+7. **Esecuzione**: caricamento dell’immagine Docker, aggiornamento della front-end e back-end e creazione ed avvio del container
     
-    ```jsx
+    ```bash
     sudo docker load < cloud_api_sample_docker_v1.10.0.tar
     
     sudo apt install curl
@@ -272,85 +272,75 @@ Il mio file application.yml con le parti da cambiare evidenziate in rosso:
     
 
 ## ALCUNI POSSIBILI ERRORI:
-    
-    ```jsx
-    ERRORE:
-    
-    npm ERR! network request to https://registry.nlark.com/rollup-plugin-external-globals/download/rollup-plugxternal-globals-0.6.1.tgz failed, reason: getaddrinfo ENOTFOUND registry.nlark.com
-    npm ERR! network This is a problem related to network connectivity.
-    ....
-    
-    SOLUZIONE:
-    Open the file "\cloud_api_sample\source\nginx\front_page\package-lock.json", search for "registry.nlark.com" and replace them all with "registry.npmmirror.com", and execute "./update_front.sh".
-    
-    ```
-    
-    ```jsx
-    ERRORE:
-    
-    sudo docker-compose up -d
-    WARN[0000] /home/gianluca/Downloads/cloud_api_sample/docker-compose.yml: the attribute version is obsolete, it will be ignored, please remove it to avoid potential confusion 
-    [+] Running 3/6
-     ✔ Network cloud_api_sample_cloud_service_bridge  Created                                                                             0.2s 
-     ⠸ Container cloud_api_sample-redis-1             Starting                                                                            1.4s 
-     ✔ Container cloud_api_sample-nginx-1             Started                                                                             1.4s 
-     ⠸ Container cloud_api_sample-emqx-1              Starting                                                                            1.4s 
-     ⠸ Container cloud_api_sample-mysql-1             Starting                                                                            1.4s 
-     ✔ Container cloud_api_sample-cloud_api_sample-1  Created                                                                             0.0s 
-    Error response from daemon: driver failed programming external connectivity on endpoint cloud_api_sample-redis-1 (ad4144a3f29b81c8f7cd3de75bfcfded3c0fab809c29283d0caee346372cf02a): failed to bind port 0.0.0.0:6379/tcp: Error starting userland proxy: listen tcp4 0.0.0.0:6379: bind: address already in use
-    
-    SOLUZIONE:
-    Controlla se Redis è già in esecuzione: Puoi verificare se c'è un'istanza di Redis in esecuzione sulla porta 6379:
-    
-    sudo lsof -i :6379
-    
-    Se esiste gà fermarla:
-    sudo systemctl stop redis
-    
-    può avvenire la stessa coa per 1883 e 3306, in caso fare sudo kill <PID>
-    ```
-    
-    ```jsx
-    ERRORE:
-    
-    mysql -u username -p
-    ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
-    
-    docker-compose down
-    docker-compose up -d
-    
-    docker exec -it cloud_api_sample-mysql-1 mysql -u root -p
-    #insewrire root come password
-    
-    CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'root';
-    GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
-    FLUSH PRIVILEGES;
-    
-    docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cloud_api_sample-cloud_api_sample-1
-    ```
-    
-    guida completa (risposta di DJI): https://sdk-forum.dji.net/hc/zh-cn/articles/30658553379865-docker部署常见问题及解决方案
-    
-    domanda nel forum: [https://sdk--forum-dji-net.translate.goog/hc/zh-cn/community/posts/30073925910809-docker部署-api项目报错?input_string=MySQL&_x_tr_sl=it&_x_tr_tl=en&_x_tr_hl=it&_x_tr_pto=wap](https://sdk--forum-dji-net.translate.goog/hc/zh-cn/community/posts/30073925910809-docker%E9%83%A8%E7%BD%B2-api%E9%A1%B9%E7%9B%AE%E6%8A%A5%E9%94%99?input_string=MySQL&_x_tr_sl=it&_x_tr_tl=en&_x_tr_hl=it&_x_tr_pto=wapp)p
-    
-    network is abnormal: https://sdk-forum.dji.net/hc/zh-cn/community/posts/34678242247705-The-network-is-abnormal-please-check-the-backend-service-and-Docker-stop-mysql?input_string=MySQL
-    
-    error 405 https://sdk-forum.dji.net/hc/zh-cn/community/posts/25495887963673-docker部署-上云api-web端登录报405
-    
 
-## Accesso a MYSQL
+Di seguito vengono riportati alcuni degli errori più comuni che si possono incontrare nel deployment:
 
-```python
-docker exec -it cloud_api_sample-mysql-1 /bin/bash
-mysql -u root -p
+```bash
+ERRORE:
 
-#inserire password root
+npm ERR! network request to https://registry.nlark.com/rollup-plugin-external-globals/download/rollup-plugxternal-globals-0.6.1.tgz failed, reason: getaddrinfo ENOTFOUND registry.nlark.com
+npm ERR! network This is a problem related to network connectivity.
+....
 
-SHOW DATABASES;
-USE cloud_sample; #le informazioni vengono salvate qua
+SOLUZIONE:
+Open the file "\cloud_api_sample\source\nginx\front_page\package-lock.json", search for "registry.nlark.com" and replace them all with "registry.npmmirror.com", and execute "./update_front.sh".
+
 ```
 
-## ACCESSO MQTT (telemetria)
+
+```bash
+ERRORE:
+
+sudo docker-compose up -d
+WARN[0000] /home/gianluca/Downloads/cloud_api_sample/docker-compose.yml: the attribute version is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Running 3/6
+ ✔ Network cloud_api_sample_cloud_service_bridge  Created                                                                             0.2s 
+ ⠸ Container cloud_api_sample-redis-1             Starting                                                                            1.4s 
+ ✔ Container cloud_api_sample-nginx-1             Started                                                                             1.4s 
+ ⠸ Container cloud_api_sample-emqx-1              Starting                                                                            1.4s 
+ ⠸ Container cloud_api_sample-mysql-1             Starting                                                                            1.4s 
+ ✔ Container cloud_api_sample-cloud_api_sample-1  Created                                                                             0.0s 
+Error response from daemon: driver failed programming external connectivity on endpoint cloud_api_sample-redis-1 (ad4144a3f29b81c8f7cd3de75bfcfded3c0fab809c29283d0caee346372cf02a): failed to bind port 0.0.0.0:6379/tcp: Error starting userland proxy: listen tcp4 0.0.0.0:6379: bind: address already in use
+
+SOLUZIONE:
+Controlla se Redis è già in esecuzione: Puoi verificare se c'è un'istanza di Redis in esecuzione sulla porta 6379:
+
+sudo lsof -i :6379
+
+Se esiste gà fermarla:
+sudo systemctl stop redis
+
+può avvenire la stessa coa per 1883 e 3306, in caso fare sudo kill <PID>
+```
+
+```bash
+ERRORE:
+
+mysql -u username -p
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+
+docker-compose down
+docker-compose up -d
+
+docker exec -it cloud_api_sample-mysql-1 mysql -u root -p
+#insewrire root come password
+
+CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cloud_api_sample-cloud_api_sample-1
+```
+
+## RISORSE UTILI:
+- Una guida completa dornita da DJI, purtroppo in cinese: [Guida completa](https://sdk-forum.dji.net/hc/zh-cn/articles/30658553379865-docker部署常见问题及解决方案)
+- Domanda nel forum di unn utente per il problema con MySQL (il secondo problema riportato nella lista sopra): [MySQL problem](https://sdk--forum-dji-net.translate.goog/hc/zh-cn/community/posts/30073925910809-docker%E9%83%A8%E7%BD%B2-api%E9%A1%B9%E7%9B%AE%E6%8A%A5%E9%94%99?input_string=MySQL&_x_tr_sl=it&_x_tr_tl=en&_x_tr_hl=it&_x_tr_pto=wapp)
+- Soluzione per il problema con il servizio Web: ["network is abnormal"](https://sdk-forum.dji.net/hc/zh-cn/community/posts/34678242247705-The-network-is-abnormal-please-check-the-backend-service-and-Docker-stop-mysql?input_string=MySQL)
+- Soluzione per il problema con il servizo Web: ["error 405"](https://sdk-forum.dji.net/hc/zh-cn/community/posts/25495887963673-docker部署-上云api-web端登录报405)
+- 
+
+
+## FILE ESEMPIO PER OTTENERE LA TELEMETRIA (con MQTT)
 
 ```python
 import logging
@@ -541,7 +531,11 @@ if __name__ == '__main__':
     run()
 ```
 
-https://sdk-forum.dji.net/hc/en-us/requests/119393
+
+
+
+
+
 
 # MOBILE SDK
 
